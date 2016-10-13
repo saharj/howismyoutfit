@@ -8,7 +8,6 @@
 //   if (response.status === 'connected') {
 //     // Logged into your app and Facebook.
 //     testAPI();
-//     $('#content').css('background-color', 'blue');
 //   } else if (response.status === 'not_authorized') {
 //     // The person is logged into Facebook, but not your app.
 //     document.getElementById('status').innerHTML = 'Please log ' +
@@ -39,17 +38,6 @@ window.fbAsyncInit = function() {
   js.src = "//connect.facebook.net/en_US/sdk.js";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));
-
-// Here we run a very simple test of the Graph API after login is
-// successful.  See statusChangeCallback() for when this call is made.
-// function testAPI() {
-//   console.log('Welcome!  Fetching your information.... ');
-//   FB.api('/me', function(response) {
-//     console.log('Successful login for: ' + response.name);
-//     document.getElementById('status').innerHTML =
-//       'Thanks for logging in, ' + response.name + '!';
-//   });
-// }
 
 function checkLoginState(event) {
   if (event.authResponse) {
@@ -88,7 +76,6 @@ function handleFiles() {
 
 	var storageRef = firebase.storage().ref();
 
-	// Create a reference to 'mountains.jpg'
 	var ref = storageRef.child('/profiles/USERNAME/outfit.jpg');
 	ref.getDownloadURL();
 
@@ -97,6 +84,16 @@ function handleFiles() {
 	}).then(function () {
 		return ref.getDownloadURL();
 	}).then(function (url) {
-		$("#createPost").append($("<img/>").attr("src", url));
+		var a = $("#createPost").find('img');
+		console.log(url);
+
+		// Avoid showing more than one pic in #createPost
+		if(a.length < 1) {
+			console.log('No image');
+			$("#createPost").append($("<img/>").attr("src", url));
+		} else {
+			console.log('There exists an image');
+			$("#createPost img").replaceWith($("<img/>").attr("src", url));
+		}
 	})
 }
