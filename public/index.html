@@ -2,20 +2,40 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Welcome to Firebase Hosting</title>
+    <link rel="stylesheet" href="style.css">
+    <title>HowIsMyOutfit?</title>
+
+    <script src="https://www.gstatic.com/firebasejs/3.4.1/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyDdjMJfAcJnbU4Nfo9zTNofI10KRupFdHA",
+        authDomain: "howismyoutfit.firebaseapp.com",
+        databaseURL: "https://howismyoutfit.firebaseio.com",
+        storageBucket: "howismyoutfit.appspot.com",
+        messagingSenderId: "299245288390"
+      };
+      firebase.initializeApp(config);
+    </script>
   </head>
   <body>
     <header>
       <h1>How Is My Outfit?</h1>
     </header>
     <div class="wrapper">
-      <div class="fb-login-button" data-max-rows="1" data-size="large" data-show-faces="false" data-auto-logout-link="true" scope="public_profile,email" onlogin="checkLoginState();"></div>
-      <!-- <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-      </fb:login-button> -->
-
-      <div id="status"></div>
-
+      <div class="fbLogin">
+        <div id="status"></div>
+        <div class="fb-login-button" data-max-rows="1" data-size="large" data-show-faces="false" data-auto-logout-link="true" scope="public_profile,email" ></div>
+        <!--onlogin="checkLoginState();"-->
+      </div>
+      
+      <div id="createPost">
+        <form enctype="multipart/form-data" action="/upload/image" method="post">
+          <input id="image-file" type="file"/>
+        </form>
+      </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script type="text/javascript" src="app.js"></script>
   </body>
 

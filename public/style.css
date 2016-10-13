@@ -1,0 +1,30 @@
+header h1 {
+	padding-left: 65px;
+	margin: 30px 0;
+}
+.wrapper {
+	overflow: auto;
+	width: 91%;
+	margin: 0 auto;
+	padding-top: 20px;
+	border-top: 1px solid lightgrey;
+}
+.wrapper .fbLogin{
+	float: right;
+	width: 250px;
+	height: 75px;
+}
+.fb-login-button {
+	margin: 15px 31%;
+}
+#createPost {
+	border: 1px solid lightgrey;
+	width: 55%;
+	height: 150px; 
+}
+#createPost img{
+	width: 20%;
+	float: right;
+	margin-right: 10%;
+}
+
