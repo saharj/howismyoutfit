@@ -21,18 +21,18 @@
   <body>
     <header>
       <h1>How Is My Outfit?</h1>
-    </header>
-    <div class="wrapper">
       <div class="fbLogin">
         <div id="status"></div>
         <div class="fb-login-button" data-max-rows="1" data-size="large" data-show-faces="false" data-auto-logout-link="true" scope="public_profile,email" ></div>
-        <!--onlogin="checkLoginState();"-->
       </div>
-      
+    </header>
+    
+    <div class="wrapper">
       <div id="createPost">
         <form enctype="multipart/form-data" action="/upload/image" method="post">
           <input id="image-file" type="file"/>
         </form>
+        <button type="submit" id="submit">Post</button>
       </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
