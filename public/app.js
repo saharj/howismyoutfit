@@ -68,32 +68,44 @@ function checkLoginState(event) {
   }
 }
 
+$('#image-file').change(handleFiles);
 
-var inputElement = $('#image-file').change(handleFiles);
+// Shows a thumbnail after selecting the picture
 function handleFiles() {
   var fileList = this.files; 
   console.log(fileList);
 
+	var a = $("#createPost").find('img');
+  getImgUrl(fileList[0]).then(function(url) {
+  	
+  	// Show only one picture at a time
+  	if(a.length < 1) {
+			$("#createPost").append($("<img/>").attr("src", url));
+		} else {
+			$("#createPost img").replaceWith($("<img/>").attr("src", url));
+		}
+  });
+};
+
+// Posts the photo to the Firebase and gets the URL from FB (a promise)
+function getImgUrl(file) {
 	var storageRef = firebase.storage().ref();
 
 	var ref = storageRef.child('/profiles/USERNAME/outfit.jpg');
 	ref.getDownloadURL();
 
-	ref.put(fileList[0]).then(function(snapshot) {
+	return ref.put(file).then(function(snapshot) {
 	  console.log('Uploaded a blob or file!');
 	}).then(function () {
 		return ref.getDownloadURL();
-	}).then(function (url) {
-		var a = $("#createPost").find('img');
-		console.log(url);
-
-		// Avoid showing more than one pic in #createPost
-		if(a.length < 1) {
-			console.log('No image');
-			$("#createPost").append($("<img/>").attr("src", url));
-		} else {
-			console.log('There exists an image');
-			$("#createPost img").replaceWith($("<img/>").attr("src", url));
-		}
-	})
+	});
 }
+
+// empty the creatPost box and post the photo in the body
+$('#submit').click(function() {
+	var url = $("#createPost").find('img').attr('src');
+
+	$('#image-file').val('');
+	$("#createPost").find('img').remove();
+	$('.wrapper').append($('<img>').attr('src', url));
+});
