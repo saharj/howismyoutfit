@@ -30,6 +30,9 @@ window.fbAsyncInit = function() {
   FB.Event.subscribe('auth.authResponseChange', checkLoginState);
 };
 
+var appReference = firebase.database();
+var storageRef = firebase.storage().ref();
+
 // Load the SDK asynchronously
 (function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
@@ -77,10 +80,30 @@ function handleFiles() {
 
 	var a = $("#createPost").find('img');
   getImgUrl(fileList[0]).then(function(url) {
-  	
   	// Show only one picture at a time
   	if(a.length < 1) {
-			$("#createPost").append($("<img/>").attr("src", url));
+  		FB.api('/me', function(response) {
+  			if(response.error) {
+  				return alert(response.error.message);
+  			}
+  			
+  			var postsRef = appReference.ref('posts');
+	  		var post = {
+	  			imageURL: url,
+	  			createdAt: Date.now(),
+	  			userName: response.name,
+	  			userId: response.id
+	  		};
+
+	  		postsRef.push(post, function(err) {
+	  			if(!err) {
+						$("#createPost").append($("<img/>").attr("src", url));
+	  			} else {
+	  				alert('Something went wrong!');
+	  			}
+	  		});
+
+  		});
 		} else {
 			$("#createPost img").replaceWith($("<img/>").attr("src", url));
 		}
@@ -89,8 +112,6 @@ function handleFiles() {
 
 // Posts the photo to the Firebase and gets the URL from FB (a promise)
 function getImgUrl(file) {
-	var storageRef = firebase.storage().ref();
-
 	var ref = storageRef.child('/profiles/USERNAME/outfit.jpg');
 	ref.getDownloadURL();
 
