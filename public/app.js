@@ -53,7 +53,8 @@ function checkLoginState(event) {
   } else {
     // User is signed-out of Facebook.
     firebase.auth().signOut();
-    $('#status').html('Successfully logged out!')
+    $('#status').html('Successfully logged out!');
+    $('.wrapper').css('display', 'none');
   }
 }
 
@@ -77,12 +78,12 @@ function ready(credential) {
 	  });
 }
 
+// When the user selects the picture, handleFiles is called
 $('#image-file').change(handleFiles);
 
 // Shows a thumbnail after selecting the picture
 function handleFiles() {
   var fileList = this.files; 
-  console.log(fileList);
 
 	var a = $("#createPost").find('img');
 	var postsRef = appReference.ref('posts');
@@ -91,6 +92,7 @@ function handleFiles() {
 
   FB.api('/me', function(response) {
 
+  	// get the image URL to show the thumbnail
   	getImgUrl(fileList[0], response.id, postId).then(function(url) {
 	  	// Show only one picture at a time
 	  	if(a.length < 1) {
@@ -125,7 +127,7 @@ function getImgUrl(file, userId, postId) {
 }
 
 
-
+// Gets the data from Firebase and updates the view
 function getPosts() {
 	  appReference.ref('posts').on('value', function(results) {
 	  	var allPosts = results.val();
@@ -134,7 +136,6 @@ function getPosts() {
 	  	$('#posts').empty();
 
 	  	Object.keys(allPosts).forEach(function (postId) {
-	  		console.log(allPosts[postId]);
 	  		var postsList = $('<li>');
 	  		var path = '/profiles/' + allPosts[postId].userId + '/' + postId;
 	  		var imageRef = storageRef.child(path);
@@ -171,11 +172,6 @@ function getPosts() {
 	  		postsList.append(heartBtn);
 	  		postsList.append('<div class="pull-right">' + likes + '</div>');
 	  		$('#posts').append(postsList);
-	  		
-	  		var postsRef = appReference.ref('posts' + postId);
-			  postsRef.on('child_removed', function(data) {
-				  deleteComment(postElement, data.key);
-				});
 	  	});
 
 			// empty the creatPost box and post the photo in the body
