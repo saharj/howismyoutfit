@@ -19,7 +19,7 @@ header h1 {
 	margin: 4%;
 }
 .wrapper {
-	//display: none;
+	display: none;
 	overflow: auto;
 	width: 50%;
 	margin: 0 25%;

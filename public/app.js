@@ -54,7 +54,6 @@ function checkLoginState(event) {
     // User is signed-out of Facebook.
     firebase.auth().signOut();
     $('#status').html('Successfully logged out!');
-    $('.wrapper').css('display', 'none');
   }
 }
 
