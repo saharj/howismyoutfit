@@ -116,7 +116,6 @@ function handleFiles() {
 // Posts the photo to the Firebase and gets the URL from FB (a promise)
 function getImgUrl(file, userId, postId) {
 	var ref = storageRef.child('/profiles/' + userId + '/' + postId);
-	// ref.getDownloadURL();
 
 	return ref.put(file).then(function(snapshot) {
 	  console.log('Uploaded a blob or file!');
@@ -130,53 +129,62 @@ function getImgUrl(file, userId, postId) {
 function getPosts() {
 	  appReference.ref('posts').on('value', function(results) {
 	  	var allPosts = results.val();
-	  	var posts = [];
 
+	  	// empty the body first
 	  	$('#posts').empty();
 
 	  	Object.keys(allPosts).forEach(function (postId) {
+	  		console.log(allPosts[postId]);
+	  		var postsList = $('<li>');
 	  		var path = '/profiles/' + allPosts[postId].userId + '/' + postId;
 	  		var imageRef = storageRef.child(path);
-	  		imageRef.getDownloadURL().then(function (url) {
+        var likes = allPosts[postId].likes;
+	  		var date = allPosts[postId].createdAt;
+	  		var	name = allPosts[postId].userName;
+        imageRef.getDownloadURL().then(function (url) {
 		  		var image = $('<img>').attr('src', url);
-		  		var date = allPosts[postId].createdAt;
-		  		var	name = allPosts[postId].userName;
-		  		var likes = allPosts[postId].likes;
-
-		  		var postsList = $('<li>');
-
-		  		postsList.append($('<p>').html(name));
 		  		postsList.append(image);
-		  		$('#posts').append(postsList);
 	  		})
-	  	})
+	  		var heartBtn = $('<i class="fa fa-heart-o" aria-hidden="true"></i>');
+	  		heartBtn.on('click', function() {
+	  			var postsRef = appReference.ref('posts').child(postId);
+	  			postsRef.update({
+	  				likes: likes+1
+	  			})
+	  		});
+	  		
+	  		var deleteBtn = $('<i class="fa fa-trash-o delete"></i>');
+	  		deleteBtn.on('click', function() {
+	  			var postsRef = appReference.ref('posts').child(postId);
+	  			postsRef.remove()
+					  .then(function() {
+					    console.log("Remove succeeded.")
+					  })
+					  .catch(function(error) {
+					    console.log("Remove failed: " + error.message)
+					  });
+	  			$(e.target.parentNode).remove();
+        })
 
-	  	// for(var post in allPosts) {
-
-
-	  	// 	var url = allPosts[post].imageURL;
-	  	// 	var image = $('<img>').attr('src', url);
-	  	// 	var date = allPosts[post].createdAt;
-	  	// 	var	name = allPosts[post].userName;
-	  	// 	var likes = allPosts[post].likes;
-
-	  	// 	var postsList = $('<li>');
-
-	  	// 	postsList.append($('<p>').html(name));
-	  	// 	postsList.append(image);
-	  	// 	posts.push(postsList);
-	  	// }
+	  		postsList.append($('<p>').html(name));
+	  		postsList.append(deleteBtn);
+	  		postsList.append(heartBtn);
+	  		postsList.append('<div class="pull-right">' + likes + '</div>');
+	  		$('#posts').append(postsList);
+	  		
+	  		var postsRef = appReference.ref('posts' + postId);
+			  postsRef.on('child_removed', function(data) {
+				  deleteComment(postElement, data.key);
+				});
+	  	});
 
 			// empty the creatPost box and post the photo in the body
 			$('#submit').click(function() {
 				$('#image-file').val('');
 				$("#createPost").find('img').remove();
 
-				// $('#posts').empty();
-		  	// for (var i in posts) {
-		   //    $('#posts').append(posts[i]);
-		   //  }
 			});
 	  });
 	}
+
 

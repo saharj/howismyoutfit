@@ -49,4 +49,12 @@ header h1 {
   top: 90px;
   left: 86%;
 }
+
+#posts li {
+	border-top: 1px solid lightgrey;
+	padding-top: 20px;
+}
+
+#posts li i {
+	margin: 10px;
 }
